@@ -49,14 +49,19 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     });
     
     console.log('上传成功：', result.secure_url);
+    console.log('完整响应：', JSON.stringify(result, null, 2));
     
     res.json({
-      url: result.secure_url,  // 使用 secure_url 确保 HTTPS
-      publicId: result.public_id
+      url: result.secure_url,
+      publicId: result.public_id,
+      status: 'success'
     });
   } catch (error) {
-    console.error('上传失败：', error);
-    res.status(500).json({ error: error.message });
+    console.error('上传失败详情：', error);
+    res.status(500).json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 

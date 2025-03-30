@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -31,16 +31,31 @@ const currencySymbols: { [key: string]: string } = {
 };
 
 const ProductDisplay: React.FC<ProductDisplayProps> = ({
-  images,
-  name,
-  phone,
-  address,
-  description,
-  price,
-  qrCode,
+  images = [],
+  name = '',
+  phone = '',
+  address = '',
+  description = '',
+  price = '',
+  qrCode = '',
   currency = 'CNY',
 }) => {
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (images && Array.isArray(images)) {
+      setLoading(false);
+    }
+  }, [images]);
+
+  if (loading) {
+    return (
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Typography>Loading...</Typography>
+      </Container>
+    );
+  }
 
   const formatPhoneNumber = (phoneNumber: string) => {
     if (phoneNumber.length >= 7) {
@@ -73,7 +88,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {/* Product Images */}
-          {images && images.length > 0 && (
+          {Array.isArray(images) && images.length > 0 && (
             <Zoom in timeout={1000}>
               <Box
                 component={motion.div}
@@ -91,8 +106,8 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
                 {images.map((image, index) => (
                   <img
                     key={index}
-                    src={image}
-                    alt={`${name} - ${index + 1}`}
+                    src={image || ''}  // 添加默认值
+                    alt={`${name || 'Product'} - ${index + 1}`}
                     style={{
                       width: '100%',
                       height: '300px',
