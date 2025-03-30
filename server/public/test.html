@@ -23,7 +23,7 @@
             formData.append('image', file);
 
             try {
-                const response = await fetch('http://localhost:3001/upload', {
+                const response = await fetch('http://localhost:3002/upload', {  // 修改端口为3002
                     method: 'POST',
                     body: formData
                 });
